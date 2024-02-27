@@ -18,10 +18,39 @@ class loginserializer(serializers.Serializer):
     password=serializers.CharField(max_length=30)
 
 
+# class ShopSerializer(serializers.ModelSerializer):
+#     class Meta:
+#         model = Shop
+#         fields = ['id', 'user', 'owner_name', 'address', 'contact_no', 'email']
+    
 class ShopSerializer(serializers.ModelSerializer):
+    username = serializers.CharField(write_only=True, required=True)
+
     class Meta:
         model = Shop
-        fields = ['id', 'user', 'owner_name', 'address', 'contact_no', 'email']
+        fields = ['id', 'username', 'owner_name', 'address', 'contact_no', 'email']
+
+    def create(self, validated_data):
+        # Retrieve the username from validated data
+        username = validated_data.pop('username')
+
+        # Retrieve the User object corresponding to the username
+        try:
+            user = User.objects.get(username=username)
+        except User.DoesNotExist:
+            raise serializers.ValidationError("User does not exist")
+
+        # Create the Shop instance
+        shop = Shop.objects.create(owner_name=validated_data['owner_name'],
+                                   address=validated_data['address'],
+                                   contact_no=validated_data['contact_no'],
+                                   email=validated_data['email'])
+
+        # Add the user to the shop's user set
+        shop.user.add(user)
+
+        return shop
+
 
 class StockSerializer(serializers.ModelSerializer):
     class Meta:

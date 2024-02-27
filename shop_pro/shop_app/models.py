@@ -3,7 +3,7 @@ from django.contrib.auth.models import User
 from django.core.validators import RegexValidator
 # Create your models here.
 class Shop(models.Model):
-    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    user = models.ManyToManyField(User, default=None)
     owner_name = models.CharField(max_length=100)
     address = models.CharField(max_length=255)
     contact_no = models.CharField(max_length=15)
