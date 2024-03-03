@@ -4,7 +4,7 @@ from django.core.validators import RegexValidator
 # Create your models here.
 class Shop(models.Model):
     user = models.ManyToManyField(User, default=None)
-    owner_name = models.CharField(max_length=100)
+    shop_name = models.CharField(max_length=100)
     address = models.CharField(max_length=255)
     contact_no = models.CharField(max_length=15)
     email = models.EmailField()
@@ -19,9 +19,11 @@ class Stock(models.Model):
 
 class Product(models.Model):
     shop = models.ForeignKey(Shop, on_delete=models.CASCADE)
+    image=models.ImageField(upload_to='product/',null=True,blank=True)
     product_name = models.CharField(max_length=100)
     description = models.TextField()
     price = models.DecimalField(max_digits=10, decimal_places=2)
+    selling_price=models.DecimalField(max_digits=10,decimal_places=2,null=True,blank=True)
     quantity_in_stock = models.PositiveIntegerField(default=0)
     stock = models.ForeignKey(Stock, on_delete=models.CASCADE)
 

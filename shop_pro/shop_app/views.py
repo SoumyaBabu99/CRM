@@ -47,9 +47,15 @@ class AdminLoginView(APIView):
             
             if user:
                 login(request, user)
+                data = {
+                'id': user.id,
+                'username': user.username,
+                'email': user.email,
+                
+            }
                 # Generate or retrieve the token for the user
                 token, created = Token.objects.get_or_create(user=user)
-                return Response({'msg': 'logged in successfully', 'token': token.key})
+                return Response({'msg': 'logged in successfully','data':data, 'token': token.key})
             else:
                 return Response({'msg': 'login failed'}, status=status.HTTP_401_UNAUTHORIZED)
         else:
@@ -57,27 +63,13 @@ class AdminLoginView(APIView):
 
 
 
-class ShopListCreateAPIView(generics.ListCreateAPIView):
-    queryset = Shop.objects.all()
-    serializer_class = ShopSerializer
+class ShopListCreateAPIView(APIView):
     authentication_classes = [TokenAuthentication, SessionAuthentication]
     permission_classes = [IsAuthenticated]
 
-    def create(self, request, *args, **kwargs):
-        serializer = self.get_serializer(data=request.data)
-        if serializer.is_valid():
-            self.perform_create(serializer)
-            headers = self.get_success_headers(serializer.data)
-            response_data = {
-                'message': 'Shop added successfully',
-                'data': serializer.data
-            }
-            return Response(response_data, status=status.HTTP_201_CREATED, headers=headers)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-    def list(self, request, *args, **kwargs):
-        queryset = self.filter_queryset(self.get_queryset())
-        serializer = self.get_serializer(queryset, many=True)
+    def get(self, request, *args, **kwargs):
+        queryset = Shop.objects.all()
+        serializer = ShopSerializer(queryset, many=True)
         response_data = {
             'message': 'Shops retrieved successfully',
             'data': serializer.data,
@@ -85,11 +77,22 @@ class ShopListCreateAPIView(generics.ListCreateAPIView):
         }
         return Response(response_data)
 
-    def update(self, request, *args, **kwargs):
-        instance = self.get_object()
-        serializer = self.get_serializer(instance, data=request.data)
+    def post(self, request, *args, **kwargs):
+        serializer = ShopSerializer(data=request.data)
         if serializer.is_valid():
-            self.perform_update(serializer)
+            serializer.save()
+            response_data = {
+                'message': 'Shop added successfully',
+                'data': serializer.data
+            }
+            return Response(response_data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    def put(self, request, *args, **kwargs):
+        instance = Shop.objects.get(pk=kwargs['pk'])
+        serializer = ShopSerializer(instance, data=request.data)
+        if serializer.is_valid():
+            serializer.save()
             response_data = {
                 'message': 'Shop updated successfully',
                 'data': serializer.data
@@ -98,8 +101,8 @@ class ShopListCreateAPIView(generics.ListCreateAPIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     def delete(self, request, *args, **kwargs):
-        instance = self.get_object()
-        self.perform_destroy(instance)
+        instance = Shop.objects.get(pk=kwargs['pk'])
+        instance.delete()
         return Response({'message': 'Shop deleted successfully'}, status=status.HTTP_204_NO_CONTENT)
 
 class ProductAddView(APIView):

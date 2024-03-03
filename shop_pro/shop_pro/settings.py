@@ -78,13 +78,13 @@ WSGI_APPLICATION = 'shop_pro.wsgi.application'
 # https://docs.djangoproject.com/en/4.1/ref/settings/#databases
 
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'Project_crm',
-        'USER': 'postgres',
-        'PASSWORD': '123456',
-        'HOST': 'localhost',
-        'PORT': '5432',
+    "default": {
+        "ENGINE": "django.db.backends.postgresql",
+        "NAME": "crmdb",
+        "USER": "crm",
+        "PASSWORD": "crmadmin@123",
+        "HOST": "127.0.0.1",
+        "PORT": "5432",
     }
 }
 
@@ -137,3 +137,8 @@ REST_FRAMEWORK={
 SPECTACULAR_SETTINGS={
     'TITLE':'SHOP PROJECT'
 }
+
+
+import os
+MEDIA_ROOT=os.path.join(BASE_DIR,'media')
+MEDIA_URL='/media/'

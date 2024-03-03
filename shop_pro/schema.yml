@@ -26,6 +26,17 @@ paths:
       responses:
         '200':
           description: No response body
+    put:
+      operationId: shop_app_billing_update
+      tags:
+      - shop_app
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '200':
+          description: No response body
   /shop_app/billing/{customer_name}/:
     get:
       operationId: shop_app_billing_retrieve_2
@@ -51,6 +62,75 @@ paths:
         name: customer_name
         schema:
           type: string
+        required: true
+      tags:
+      - shop_app
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '200':
+          description: No response body
+    put:
+      operationId: shop_app_billing_update_2
+      parameters:
+      - in: path
+        name: customer_name
+        schema:
+          type: string
+        required: true
+      tags:
+      - shop_app
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '200':
+          description: No response body
+  /shop_app/billings/{id}/:
+    get:
+      operationId: shop_app_billings_retrieve
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - shop_app
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '200':
+          description: No response body
+    post:
+      operationId: shop_app_billings_create
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - shop_app
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '200':
+          description: No response body
+    put:
+      operationId: shop_app_billings_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
         required: true
       tags:
       - shop_app
@@ -405,7 +485,6 @@ paths:
           - tr
           - tt
           - udm
-          - ug
           - uk
           - ur
           - uz
@@ -645,8 +724,9 @@ components:
         id:
           type: integer
           readOnly: true
-        user:
-          type: integer
+        username:
+          type: string
+          writeOnly: true
         owner_name:
           type: string
           maxLength: 100
@@ -666,7 +746,7 @@ components:
       - email
       - id
       - owner_name
-      - user
+      - username
   securitySchemes:
     basicAuth:
       type: http

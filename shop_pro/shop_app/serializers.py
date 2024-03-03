@@ -28,7 +28,7 @@ class ShopSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Shop
-        fields = ['id', 'username', 'owner_name', 'address', 'contact_no', 'email']
+        fields = ['id', 'username', 'shop_name', 'address', 'contact_no', 'email']
 
     def create(self, validated_data):
         # Retrieve the username from validated data
@@ -41,7 +41,7 @@ class ShopSerializer(serializers.ModelSerializer):
             raise serializers.ValidationError("User does not exist")
 
         # Create the Shop instance
-        shop = Shop.objects.create(owner_name=validated_data['owner_name'],
+        shop = Shop.objects.create(shop_name=validated_data['shop_name'],
                                    address=validated_data['address'],
                                    contact_no=validated_data['contact_no'],
                                    email=validated_data['email'])
